@@ -133,10 +133,9 @@
   </style>
 </head>
 
-<body>
+<body tabindex="0">
 
 <h2>tekan SPASI buat lompat 🥺</h2>
-
 <div id="game">
   <div id="ground"></div>
 
@@ -149,6 +148,7 @@
 <div id="end">akhirnya aku sampai ke kamu 🥺💖</div>
 
 <script>
+  document.body.focus();
 let boy = document.getElementById("boy");
 let obstacle = document.getElementById("obstacle");
 let girl = document.getElementById("girl");
@@ -157,13 +157,15 @@ let end = document.getElementById("end");
 /* LOMPAT */
 document.addEventListener("keydown", function(e){
   if(e.code === "Space"){
+    e.preventDefault(); // ⬅️ penting banget
+
     if(!boy.classList.contains("jump")){
       boy.classList.add("jump");
       setTimeout(()=>boy.classList.remove("jump"),600);
     }
   }
 });
-
+  
 /* COLLISION */
 let check = setInterval(function(){
   let boyBottom = parseInt(window.getComputedStyle(boy).getPropertyValue("bottom"));
