@@ -156,13 +156,12 @@ let end = document.getElementById("end");
 
 /* LOMPAT */
 document.addEventListener("keydown", function(e){
-  if(e.code === "Space"){
-    e.preventDefault(); // ⬅️ penting banget
+  if(e.code === "Space" || e.key === " "){
+    e.preventDefault();
 
-    if(!boy.classList.contains("jump")){
-      boy.classList.add("jump");
-      setTimeout(()=>boy.classList.remove("jump"),600);
-    }
+    boy.classList.remove("jump");
+    void boy.offsetWidth; // 
+    boy.classList.add("jump");
   }
 });
   
