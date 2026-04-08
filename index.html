@@ -165,6 +165,54 @@ document.addEventListener("keydown", function(e){
 });
 
   let score = 0;
+let speed = 2;
+let gameOver = false;
+
+let scoreDisplay = document.getElementById("score");
+let jumpSound = document.getElementById("jumpSound");
+
+// SCORE
+setInterval(() => {
+  if(gameOver) return;
+  score++;
+  scoreDisplay.innerText = "Score: " + score;
+}, 100);
+
+// SPEED NAIK
+setInterval(() => {
+  if(gameOver) return;
+  speed -= 0.1;
+  if(speed < 0.8) speed = 0.8;
+  obstacle.style.animationDuration = speed + "s";
+}, 2000);
+
+// LOMPAT
+document.addEventListener("keydown", function(e){
+  if(e.code === "Space" || e.key === " "){
+    e.preventDefault();
+
+    boy.classList.remove("jump");
+    void boy.offsetWidth;
+    boy.classList.add("jump");
+
+  }
+});
+
+// COLLISION
+let check = setInterval(function(){
+  if(gameOver) return;
+
+  let boyBottom = parseInt(window.getComputedStyle(boy).getPropertyValue("bottom"));
+  let obstacleLeft = obstacle.getBoundingClientRect().left;
+
+  if(obstacleLeft < 120 && obstacleLeft > 60 && boyBottom < 20){
+    gameOver = true;
+    alert("yah ketabrak 😭 Score kamu: " + score);
+    location.reload();
+  }
+},10);
+
+  let score = 0;
 let scoreDisplay = document.getElementById("score"); //
 setInterval(() => {
   score++;
