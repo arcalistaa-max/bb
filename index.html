@@ -169,7 +169,6 @@ let obstacles = [];
   
   
 /* START */
-}
 function startGame(){
   document.getElementById("startScreen").style.display = "none";
   gameStarted = true;
@@ -354,10 +353,31 @@ setInterval(()=>{
 /* GAME OVER */
 function endGame(){
   gameOver = true;
+
   popup.innerHTML = "Yah sayang aku nabrak 😭<br>Score: "+score;
   popup.classList.add("show");
 
-  setTimeout(()=>location.reload(),500);
+  setTimeout(()=>{
+    resetGame();
+  },2000);
+}
+  function resetGame(){
+  // reset state
+  score = 0;
+  gameOver = false;
+  obstacles = [];
+  isSliding = false;
+
+  scoreDisplay.innerText = "Score: 0";
+
+  // hapus obstacle lama
+  document.querySelectorAll(".obstacle, .block, .loveItem").forEach(el => el.remove());
+
+  popup.classList.remove("show");
+
+  // start lagi
+  spawnObstacle();
+}
 }
 function showLetter(){
   document.body.innerHTML = `
