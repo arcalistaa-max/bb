@@ -150,6 +150,10 @@ h2 { color:#ff4d6d; }
     transform: translateY(100vh);
     opacity: 0;
   }
+  #popup button {
+  width: 160px;
+  margin-top: 10px;
+  border-radius: 12px;
 }
 /* START SCREEN */
 #startScreen {
@@ -213,7 +217,8 @@ let gameStarted = false;
 let boy = document.getElementById("boy");
 let popup = document.getElementById("popup");
 let scoreDisplay = document.getElementById("score");
-
+let girl = document.getElementById("girl");
+  
 let score = 0;
 let gameOver = false;
 let isSliding = false;
@@ -353,9 +358,7 @@ document.getElementById("girl").classList.add("blush");
     }
 
   },2500);
-  }
-
-  // 💌 lanjut ke surat
+  } // 💌 lanjut ke surat
   setTimeout(()=>{
   showChoice();
 },4500);
@@ -363,7 +366,18 @@ document.getElementById("girl").classList.add("blush");
 
 /* MOVEMENT + COLLISION */
 let speed = 8;
+  
+setInterval(()=>{
+  if(gameOver) return;
 
+  if(score % 50 === 0 && score !== 0){
+    girl.style.transform = "scale(1.2)";
+    setTimeout(()=>{
+      girl.style.transform = "scale(1)";
+    },300);
+  }
+
+},500);
 setInterval(()=>{
   if(gameOver) return;
 
@@ -453,15 +467,7 @@ function endGame(){
 
   // start lagi
   spawnObstacle();
-}
-  function showChoice(){
-  popup.innerHTML = `
-    <h3>💖 kita akhirnya ketemu...</h3>
-    <p>kamu mau apa sekarang?</p>
-    <button onclick="showLetter()">💌 Buka Surat</button><br><br>
-    <button onclick="location.reload()">🎮 Main Lagi</button>
-  `;
-  popup.classList.add("show");
+
 }
 function showLetter(){
   document.body.innerHTML = `
@@ -493,6 +499,16 @@ function showLetter(){
       </div>
     </div>
   `;
+}
+  function showChoice(){
+  popup.innerHTML = `
+    <h3>💖 kita akhirnya ketemu...</h3>
+    <p>mau ngapain sekarang?</p>
+
+    <button onclick="showLetter()">💌 Buka Surat</button><br><br>
+    <button onclick="resetGame()">🎮 Main Lagi</button>
+  `;
+  popup.classList.add("show");
 }
 </script>
 
