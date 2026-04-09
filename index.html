@@ -8,14 +8,14 @@ body {
   margin: 0;
   overflow: hidden;
   background: linear-gradient(#ffe4ec, #ffd1dc);
-  text-align: center;
   font-family: Arial;
+  text-align: center;
 }
 
 h2 { color:#ff4d6d; }
 #score { color:#ff4d6d; }
 
-/* GAME AREA */
+/* GAME */
 #game {
   width: 90%;
   height: 300px;
@@ -60,42 +60,28 @@ h2 { color:#ff4d6d; }
   100% { bottom: 6px; }
 }
 
-/* OBSTACLE BAWAH */
-.obstacle {
-  position: absolute;
-  bottom: 6px;
-  right: -50px;
-  font-size: 25px;
-  animation: move 2s linear infinite;
+.slide {
+  height: 35px;
 }
 
-/* BLOCK ATAS (MARIO STYLE) */
-.block {
+/* OBJECT */
+.obstacle, .block, .loveItem {
   position: absolute;
-  bottom: 80px;
   right: -50px;
+  font-size: 24px;
+}
+
+.obstacle { bottom: 6px; }
+.block {
+  bottom: 80px;
   width: 40px;
   height: 40px;
   background: #ff8fab;
   border-radius: 8px;
-  animation: move 2.5s linear infinite;
 }
+.loveItem { bottom: 140px; }
 
-/* LOVE */
-.loveItem {
-  position: absolute;
-  bottom: 140px;
-  right: -50px;
-  font-size: 22px;
-  animation: move 3s linear infinite;
-}
-
-@keyframes move {
-  from { right: -50px; }
-  to { right: 100%; }
-}
-
-/* POPUP */
+/* UI */
 #popup {
   position: absolute;
   top: 40%;
@@ -112,6 +98,31 @@ h2 { color:#ff4d6d; }
   transform: translate(-50%, -50%) scale(1);
 }
 
+/* START SCREEN */
+#startScreen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,228,236,0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ff4d6d;
+  z-index: 999;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #ff4d6d;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 </style>
 </head>
 
@@ -120,43 +131,69 @@ h2 { color:#ff4d6d; }
 <h2>Run To You 💖</h2>
 <h3 id="score">Score: 0</h3>
 
+<!-- START SCREEN -->
+<div id="startScreen">
+  <h2>Cara Main 💖</h2>
+  <p>
+    ⬆️ Lompat: Spasi / Klik<br>
+    ⬇️ Nunduk: Arrow Down / S<br><br>
+    💔 Hindari rintangan<br>
+    💖 Ambil love +10 poin
+  </p>
+  <button onclick="startGame()">Mulai</button>
+</div>
+
 <div id="game">
   <div id="ground"></div>
-
   <img id="boy" src="zeeyz.png">
-
-  <div class="obstacle" id="obs1">💔</div>
-  <div class="block" id="block1"></div>
-  <div class="loveItem" id="love1">💖</div>
-
   <div id="popup"></div>
 </div>
 
 <script>
 
 let boy = document.getElementById("boy");
-let obs = document.getElementById("obs1");
-let block = document.getElementById("block1");
-let love = document.getElementById("love1");
 let popup = document.getElementById("popup");
 let scoreDisplay = document.getElementById("score");
 
 let score = 0;
 let gameOver = false;
+let isSliding = false;
+let obstacles = [];
 
-/* JUMP */
+/* START */
+function startGame(){
+  document.getElementById("startScreen").style.display = "none";
+  spawnObstacle();
+}
+
+/* CONTROL */
 function jump(){
-  if(gameOver) return;
+  if(gameOver || isSliding) return;
 
   boy.classList.remove("jump");
   void boy.offsetWidth;
   boy.classList.add("jump");
 }
 
+function slide(){
+  if(gameOver) return;
+
+  isSliding = true;
+  boy.classList.add("slide");
+
+  setTimeout(()=>{
+    isSliding = false;
+    boy.classList.remove("slide");
+  },600);
+}
+
 window.addEventListener("keydown", e=>{
   if(e.code === "Space"){
     e.preventDefault();
     jump();
+  }
+  if(e.code === "ArrowDown" || e.key === "s"){
+    slide();
   }
 });
 
@@ -170,56 +207,88 @@ setInterval(()=>{
   scoreDisplay.innerText = "Score: " + score;
 },300);
 
-/* RANDOM HEIGHT LOVE */
-setInterval(()=>{
-  let h = Math.random()*60 + 120;
-  love.style.bottom = h+"px";
-},3000);
+/* SPAWN */
+function spawnObstacle(){
+  if(gameOver) return;
 
-/* COLLISION SYSTEM */
+  let type = Math.random();
+  let el = document.createElement("div");
+
+  if(type < 0.4){
+    el.className = "obstacle";
+    el.innerHTML = "💔";
+  } 
+  else if(type < 0.7){
+    el.className = "block";
+  } 
+  else {
+    el.className = "loveItem";
+    el.innerHTML = "💖";
+    el.style.bottom = (Math.random()*60+120)+"px";
+  }
+
+  el.style.right = "-50px";
+  document.getElementById("game").appendChild(el);
+  obstacles.push(el);
+
+  let delay = Math.random()*1500 + 1200;
+  setTimeout(spawnObstacle, delay);
+}
+
+/* MOVEMENT + COLLISION */
 setInterval(()=>{
   if(gameOver) return;
 
-  let boyRect = boy.getBoundingClientRect();
+  obstacles.forEach((el, i)=>{
+    let current = parseInt(el.style.right);
+    el.style.right = (current + 5) + "px";
 
-  let obsRect = obs.getBoundingClientRect();
-  let blockRect = block.getBoundingClientRect();
-  let loveRect = love.getBoundingClientRect();
+    let boyRect = boy.getBoundingClientRect();
+    let rect = el.getBoundingClientRect();
+    let pad = 10;
 
-  let pad = 15;
+    if(el.className === "obstacle"){
+      if(
+        boyRect.right - pad > rect.left &&
+        boyRect.left + pad < rect.right &&
+        boyRect.bottom - pad > rect.top
+      ){
+        endGame();
+      }
+    }
 
-  // 💔 obstacle bawah
-  if(
-    boyRect.right - pad > obsRect.left &&
-    boyRect.left + pad < obsRect.right &&
-    boyRect.bottom - pad > obsRect.top
-  ){
-    endGame();
-  }
+    if(el.className === "block"){
+      if(
+        !isSliding &&
+        boyRect.right - pad > rect.left &&
+        boyRect.left + pad < rect.right &&
+        boyRect.top + pad < rect.bottom
+      ){
+        endGame();
+      }
+    }
 
-  // 🧱 block atas (kepala kena)
-  if(
-    boyRect.right - pad > blockRect.left &&
-    boyRect.left + pad < blockRect.right &&
-    boyRect.top + pad < blockRect.bottom &&
-    boyRect.bottom > blockRect.top
-  ){
-    endGame();
-  }
+    if(el.className === "loveItem"){
+      if(
+        boyRect.right > rect.left &&
+        boyRect.left < rect.right &&
+        boyRect.top < rect.bottom
+      ){
+        score += 10;
+        scoreDisplay.innerText = "Score: " + score;
+        el.remove();
+        obstacles.splice(i,1);
+      }
+    }
 
-  // 💖 ambil love
-  if(
-    boyRect.right > loveRect.left &&
-    boyRect.left < loveRect.right &&
-    boyRect.top < loveRect.bottom
-  ){
-    score += 10;
-    scoreDisplay.innerText = "Score: " + score;
+    if(rect.right < 0){
+      el.remove();
+      obstacles.splice(i,1);
+    }
 
-    love.style.right = "-50px";
-  }
+  });
 
-},10);
+},20);
 
 /* GAME OVER */
 function endGame(){
