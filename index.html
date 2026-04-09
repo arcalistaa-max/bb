@@ -51,7 +51,7 @@ h2 { color:#ff4d6d; }
 }
 
 .jump {
-  animation: jump 0.6s ease;
+  animation: jump 0.45s ease;
 }
 
 @keyframes jump {
@@ -161,7 +161,8 @@ let score = 0;
 let gameOver = false;
 let isSliding = false;
 let obstacles = [];
-
+  
+  
 /* START */
 function startGame(){
   document.getElementById("startScreen").style.display = "none";
@@ -188,7 +189,7 @@ function slide(){
   setTimeout(()=>{
     isSliding = false;
     boy.classList.remove("slide");
-  },800);
+  },400);
 }
 
 window.addEventListener("keydown", e=>{
@@ -235,7 +236,7 @@ function spawnObstacle(){
   document.getElementById("game").appendChild(el);
   obstacles.push(el);
 
-  let delay = Math.random()*2000 + 1800;
+  let delay = Math.random()*1200 + 1400;
   setTimeout(spawnObstacle, delay);
 }
 
@@ -245,20 +246,23 @@ setInterval(()=>{
 
   obstacles.forEach((el, i)=>{
     let current = parseInt(el.style.right);
-    el.style.right = (current + 3) + "px";
+  let speed = 6; 
+
+el.style.right = (current + speed) + "px";
 
     let boyRect = boy.getBoundingClientRect();
     let rect = el.getBoundingClientRect();
-    let pad = 20;
+    let padX = 25;
+    let padY = 10;
 
-    if(el.className === "obstacle"){
-      if(
-        boyRect.right - pad > rect.left &&
-        boyRect.left + pad < rect.right &&
-        boyRect.bottom - pad > rect.top
-      ){
-        endGame();
-      }
+    if(el.className === "obstacle")
+        if(
+  boyRect.right - padX > rect.left &&
+  boyRect.left + padX < rect.right &&
+  boyRect.bottom - padY > rect.top
+){
+  endGame();
+}
     }
 
     if(el.className === "block"){
