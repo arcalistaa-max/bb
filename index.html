@@ -97,7 +97,12 @@ h2 { color:#ff4d6d; }
 #popup.show {
   transform: translate(-50%, -50%) scale(1);
 }
-
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
 /* START SCREEN */
 #startScreen {
   position: fixed;
@@ -164,12 +169,21 @@ let obstacles = [];
   
   
 /* START */
+}
 function startGame(){
   document.getElementById("startScreen").style.display = "none";
   gameStarted = true;
+
+  // 💖 POPUP AWAL
+  popup.innerHTML = "💌 Dapetin 200 poin biar kita bisa ketemu ya sayang 💖";
+  popup.classList.add("show");
+
+  setTimeout(()=>{
+    popup.classList.remove("show");
+  },2000);
+
   spawnObstacle();
 }
-
 
 /* CONTROL */
 function jump(){
@@ -249,10 +263,27 @@ function spawnObstacle(){
   function winGame(){
   gameOver = true;
 
-  popup.innerHTML = "Akhirnya sampai ke kamu 💖✨<br>Score: " + score;
+  popup.innerHTML = "🎉 YEAYY KITA KETEMU 💖✨";
   popup.classList.add("show");
 
-  setTimeout(()=>location.reload(),2500);
+  // ✨ efek love jatuh
+  for(let i=0; i<20; i++){
+    let love = document.createElement("div");
+    love.innerHTML = "💖";
+    love.style.position = "fixed";
+    love.style.left = Math.random()*100 + "%";
+    love.style.top = "-20px";
+    love.style.fontSize = "24px";
+    love.style.animation = "fall 2s linear forwards";
+
+    document.body.appendChild(love);
+
+    setTimeout(()=>love.remove(),2000);
+  }
+
+  setTimeout(()=>{
+    showLetter();
+  },2500);
 }
 
 /* MOVEMENT + COLLISION */
@@ -328,7 +359,37 @@ function endGame(){
 
   setTimeout(()=>location.reload(),500);
 }
-
+function showLetter(){
+  document.body.innerHTML = `
+    <div style="
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      background:linear-gradient(#ffe4ec,#ffd1dc);
+      font-family:Arial;
+      text-align:center;
+      color:#ff4d6d;
+      padding:20px;
+    ">
+      <div style="
+        background:white;
+        padding:25px;
+        border-radius:15px;
+        max-width:400px;
+      ">
+        <h2>💌 Surat Untuk Kamu</h2>
+        <p>
+        akhirnya kita ketemu juga 💖<br><br>
+        makasih ya udah bertahan sejauh ini,<br>
+        walaupun banyak rintangan 💔<br><br>
+        aku selalu nunggu kamu di garis akhir ✨
+        </p>
+        <button onclick="location.reload()">Main Lagi 💖</button>
+      </div>
+    </div>
+  `;
+}
 </script>
 
 </body>
