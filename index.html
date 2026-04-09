@@ -52,7 +52,17 @@ h2, #score { color:#ff4d6d; }
   width:80px;
   display:none;
 }
+  
+#boy.duck {
+  height:35px;
+  width:60px;
+}
 
+.flyingObstacle {
+  position:absolute;
+  bottom:80px;
+  font-size:26px;
+}
 .jump { animation: jump 0.45s ease; }
 @keyframes jump {
   0% { bottom:6px; }
@@ -152,7 +162,14 @@ function startGame(){
   bgm.play();
   spawnObstacle();
 }
+function duckDown(){
+  if(gameOver) return;
+  boy.classList.add("duck");
+}
 
+function duckUp(){
+  boy.classList.remove("duck");
+}
 function jump(){
   if(gameOver) return;
   jumpSound.play();
@@ -165,7 +182,15 @@ document.addEventListener("click", jump);
 document.addEventListener("keydown", e=>{
   if(e.code === "Space") jump();
 });
+  
+document.addEventListener("keydown", e=>{
+  if(e.code === "ArrowDown") duckDown();
+});
 
+document.addEventListener("keyup", e=>{
+  if(e.code === "ArrowDown") duckUp();
+});
+  
 setInterval(()=>{
   if(gameOver) return;
   score++;
@@ -178,13 +203,16 @@ function spawnObstacle(){
   let el = document.createElement("div");
   let type = Math.random();
 
-  if(type < 0.7){
-    el.className="obstacle";
-    el.innerHTML="💔";
-  } else {
-    el.className="loveItem";
-    el.innerHTML="💖";
-  }
+  if(type < 0.5){
+  el.className="obstacle";
+  el.innerHTML="💔";
+} else if(type < 0.8){
+  el.className="flyingObstacle";
+  el.innerHTML="🕊️";
+} else {
+  el.className="loveItem";
+  el.innerHTML="💖";
+}
 
   el.style.right="-50px";
   document.getElementById("game").appendChild(el);
@@ -215,8 +243,19 @@ setInterval(()=>{
     hitSound.play();
     endGame();
   }
-    }
+}
+if(el.className==="flyingObstacle"){
+  let padding = 10;
 
+  if(
+    boyRect.right - padding > rect.left &&
+    boyRect.left + padding < rect.right &&
+    boyRect.top < rect.bottom - padding
+  ){
+    hitSound.play();
+    endGame();
+  }
+}
    if(el.className==="loveItem"){
   if(
     boyRect.right > rect.left &&
@@ -261,40 +300,81 @@ function showLetter(){
   document.body.innerHTML = `
   <div style="
     min-height:100vh;
+    background:linear-gradient(#ffe4ec,#ffd1dc);
     display:flex;
-    flex-direction:column;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(#ffe4ec,#ffd1dc);
+    font-family:Arial;
     color:#ff4d6d;
-    padding:20px;
   ">
 
-    <div style="
+    <div id="slides" style="
+      width:90%;
+      max-width:420px;
       background:white;
-      padding:25px;
+      padding:20px;
       border-radius:20px;
-      max-width:400px;
       text-align:center;
-    ">
+      box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    "></div>
 
-      <h2>💌 Untuk Kamu</h2>
-
-      <p>
-      akhirnya kita sampai di sini 💖<br><br>
-      makasih ya udah bertahan sejauh ini,<br>
-      walaupun banyak rintangan 💔<br><br>
-      aku selalu nunggu kamu di garis akhir ✨
-      </p>
-
-      <img src="https://i.imgur.com/1.jpg" style="width:100%;border-radius:10px;margin-top:10px;">
-      <img src="https://i.imgur.com/2.jpg" style="width:100%;border-radius:10px;margin-top:10px;">
-
-      <button onclick="location.reload()">💖 Main Lagi</button>
-
-    </div>
   </div>
   `;
+
+  let slides = [
+    {
+      text:`awal semuanya mungkin biasa aja...<br><br>
+      tapi entah kenapa, dari semua hal kecil itu<br>
+      aku mulai ngerasa kamu beda 💖`,
+      img:"https://i.imgur.com/1.jpg"
+    },
+    {
+      text:`kita pernah lewatin hari yang gampang,<br>
+      tapi juga yang berat banget 💔<br><br>
+      makasih ya kamu masih di sini`,
+      img:"https://i.imgur.com/2.jpg"
+    },
+    {
+      text:`kadang aku nyebelin, kadang kamu juga 😭<br><br>
+      tapi anehnya... aku tetap milih kamu`,
+      img:"https://i.imgur.com/3.jpg"
+    },
+    {
+      text:`kalau nanti jalannya makin susah,<br>
+      jangan pergi ya...<br><br>
+      kita lewatin bareng-bareng ✨`,
+      img:"https://i.imgur.com/4.jpg"
+    },
+    {
+      text:`dan kalau di akhir semuanya kita masih bareng...<br><br>
+      berarti kamu emang tujuan aku 💖`,
+      img:"https://i.imgur.com/5.jpg"
+    }
+  ];
+
+  let index = 0;
+
+  function renderSlide(){
+    let s = slides[index];
+    document.getElementById("slides").innerHTML = `
+      <h3>💌 Untuk Kamu</h3>
+      <p>${s.text}</p>
+      <img src="${s.img}" style="width:100%;border-radius:12px;margin-top:10px;">
+      <br><br>
+      ${
+        index < slides.length-1
+        ? `<button onclick="nextSlide()">Lanjut ➡️</button>`
+        : `<button onclick="location.reload()">💖 Main Lagi</button>`
+      }
+    `;
+  }
+
+  window.nextSlide = function(){
+    index++;
+    renderSlide();
+  }
+
+  renderSlide();
 }
 </script>
 
