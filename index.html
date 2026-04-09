@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Run To You 💖 (Enhanced)</title>
+<meta charset="UTF-8">
+<title>Run To You 💖</title>
 <style>
 body {
-  margin: 0;
-  overflow: hidden;
-  background: linear-gradient(#ffdde1, #ee9ca7);
-  font-family: Arial;
-  text-align: center;
+  margin:0;
+  overflow:hidden;
+  font-family:Arial;
+  background: linear-gradient(#ffe4ec,#ffd1dc);
+  text-align:center;
 }
 
 h2, #score { color:#ff4d6d; }
 
 #game {
-  width: 90%;
-  height: 320px;
-  margin: 30px auto;
-  position: relative;
-  overflow: hidden;
-  border-radius: 20px;
-  background: url('https://i.imgur.com/8wKQZ5H.png');
-  background-size: cover;
+  width:90%;
+  height:320px;
+  margin:20px auto;
+  position:relative;
+  overflow:hidden;
+  border-radius:20px;
+  background: linear-gradient(#fff0f5,#ffd6e0);
 }
 
 #ground {
-  position: absolute;
-  bottom: 0;
-  width: 200%;
-  height: 6px;
-  background: #ff8fab;
+  position:absolute;
+  bottom:0;
+  width:200%;
+  height:6px;
+  background:#ff8fab;
   animation: ground 2s linear infinite;
 }
 
@@ -39,65 +39,81 @@ h2, #score { color:#ff4d6d; }
 }
 
 #boy {
-  position: absolute;
-  bottom: 6px;
-  left: 50px;
-  width: 60px;
+  position:absolute;
+  bottom:6px;
+  left:50px;
+  width:60px;
 }
 
 #girl {
-  position: absolute;
-  bottom: 6px;
-  right: 50px;
-  width: 90px;
-  display: none;
+  position:absolute;
+  bottom:6px;
+  right:50px;
+  width:80px;
+  display:none;
 }
 
 .jump { animation: jump 0.45s ease; }
 @keyframes jump {
-  0% { bottom: 6px; }
-  50% { bottom: 120px; }
-  100% { bottom: 6px; }
+  0% { bottom:6px; }
+  50% { bottom:120px; }
+  100% { bottom:6px; }
 }
-
-.slide { height: 35px; }
 
 .obstacle, .loveItem {
-  position: absolute;
-  right: -50px;
-  font-size: 26px;
+  position:absolute;
+  right:-50px;
+  font-size:26px;
 }
 
-.obstacle { bottom: 6px; }
-.loveItem { bottom: 140px; }
+.obstacle { bottom:6px; }
+.loveItem { bottom:140px; }
 
 #popup {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  color: #ff4d6d;
-  transition: 0.3s;
+  position:absolute;
+  top:40%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(0);
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  color:#ff4d6d;
+  transition:0.3s;
 }
 
-#popup.show { transform: translate(-50%, -50%) scale(1); }
+#popup.show { transform:translate(-50%,-50%) scale(1); }
 
 button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  background: #ff4d6d;
-  color: white;
-  cursor: pointer;
+  margin-top:10px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
+}
+
+#startScreen {
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#ffe4ec;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
 }
 </style>
 </head>
 
 <body>
+
+<div id="startScreen">
+  <h2>Run To You 💖</h2>
+  <p>Tekan spasi / klik untuk lompat</p>
+  <button onclick="startGame()">Mulai 💖</button>
+</div>
 
 <h2>Run To You 💖</h2>
 <h3 id="score">Score: 0</h3>
@@ -110,11 +126,10 @@ button {
 </div>
 
 <!-- SOUND -->
-<audio id="jumpSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
-<audio id="hitSound" src="https://www.soundjay.com/button/beep-10.mp3"></audio>
-<audio id="winSound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
-<audio id="loseSound" src="https://www.soundjay.com/misc/sounds/fail-buzzer-02.mp3"></audio>
-<audio id="bgm" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+<audio id="jumpSound" src="jump.mp3"></audio>
+<audio id="hitSound" src="hit.mp3"></audio>
+<audio id="winSound" src="win.mp3"></audio>
+<audio id="bgm" src="bgm.mp3" loop></audio>
 
 <script>
 let boy = document.getElementById("boy");
@@ -125,15 +140,18 @@ let scoreDisplay = document.getElementById("score");
 let jumpSound = document.getElementById("jumpSound");
 let hitSound = document.getElementById("hitSound");
 let winSound = document.getElementById("winSound");
-let loseSound = document.getElementById("loseSound");
 let bgm = document.getElementById("bgm");
 
 let score = 0;
 let gameOver = false;
 let obstacles = [];
 
-bgm.volume = 0.3;
-bgm.play();
+function startGame(){
+  document.getElementById("startScreen").style.display="none";
+  bgm.volume = 0.3;
+  bgm.play();
+  spawnObstacle();
+}
 
 function jump(){
   if(gameOver) return;
@@ -144,39 +162,36 @@ function jump(){
 }
 
 document.addEventListener("click", jump);
-document.addEventListener("keydown", e => {
+document.addEventListener("keydown", e=>{
   if(e.code === "Space") jump();
 });
 
 setInterval(()=>{
   if(gameOver) return;
   score++;
-  scoreDisplay.innerText = "Score: " + score;
-
-  if(score >= 150) winGame();
+  scoreDisplay.innerText = "Score: "+score;
+  if(score>=150) winGame();
 },100);
 
 function spawnObstacle(){
   if(gameOver) return;
-
   let el = document.createElement("div");
   let type = Math.random();
 
   if(type < 0.7){
-    el.className = "obstacle";
-    el.innerHTML = "💔";
+    el.className="obstacle";
+    el.innerHTML="💔";
   } else {
-    el.className = "loveItem";
-    el.innerHTML = "💖";
+    el.className="loveItem";
+    el.innerHTML="💖";
   }
 
-  el.style.right = "-50px";
+  el.style.right="-50px";
   document.getElementById("game").appendChild(el);
   obstacles.push(el);
 
   setTimeout(spawnObstacle, Math.random()*800+500);
 }
-spawnObstacle();
 
 let speed = 6;
 setInterval(()=>{
@@ -189,22 +204,22 @@ setInterval(()=>{
     let boyRect = boy.getBoundingClientRect();
     let rect = el.getBoundingClientRect();
 
-    if(el.className === "obstacle"){
-      if(boyRect.right > rect.left && boyRect.left < rect.right && boyRect.bottom > rect.top){
+    if(el.className==="obstacle"){
+      if(boyRect.right>rect.left && boyRect.left<rect.right && boyRect.bottom>rect.top){
         hitSound.play();
         endGame();
       }
     }
 
-    if(el.className === "loveItem"){
-      if(boyRect.right > rect.left && boyRect.left < rect.right){
-        score += 10;
+    if(el.className==="loveItem"){
+      if(boyRect.right>rect.left && boyRect.left<rect.right){
+        score+=10;
         el.remove();
         obstacles.splice(i,1);
       }
     }
 
-    if(rect.right < 0){
+    if(rect.right<0){
       el.remove();
       obstacles.splice(i,1);
     }
@@ -214,18 +229,62 @@ setInterval(()=>{
 function winGame(){
   gameOver = true;
   winSound.play();
-  girl.style.display = "block";
+  girl.style.display="block";
 
-  popup.innerHTML = "💖 Kamu berhasil ketemu dia! 💖";
+  popup.innerHTML = `
+    <h3>💖 akhirnya kita ketemu...</h3>
+    <button onclick="showLetter()">💌 Buka Surat</button><br>
+    <button onclick="location.reload()">🎮 Main Lagi</button>
+  `;
   popup.classList.add("show");
 }
 
 function endGame(){
-  gameOver = true;
-  loseSound.play();
-
-  popup.innerHTML = "😭 Kamu kalah!<br>Score: "+score;
+  gameOver=true;
+  popup.innerHTML = "😭 Kamu nabrak!<br>Score: "+score;
   popup.classList.add("show");
+
+  setTimeout(()=>location.reload(),2000);
+}
+
+function showLetter(){
+  document.body.innerHTML = `
+  <div style="
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(#ffe4ec,#ffd1dc);
+    color:#ff4d6d;
+    padding:20px;
+  ">
+
+    <div style="
+      background:white;
+      padding:25px;
+      border-radius:20px;
+      max-width:400px;
+      text-align:center;
+    ">
+
+      <h2>💌 Untuk Kamu</h2>
+
+      <p>
+      akhirnya kita sampai di sini 💖<br><br>
+      makasih ya udah bertahan sejauh ini,<br>
+      walaupun banyak rintangan 💔<br><br>
+      aku selalu nunggu kamu di garis akhir ✨
+      </p>
+
+      <img src="https://i.imgur.com/1.jpg" style="width:100%;border-radius:10px;margin-top:10px;">
+      <img src="https://i.imgur.com/2.jpg" style="width:100%;border-radius:10px;margin-top:10px;">
+
+      <button onclick="location.reload()">💖 Main Lagi</button>
+
+    </div>
+  </div>
+  `;
 }
 </script>
 
