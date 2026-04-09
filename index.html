@@ -49,7 +49,55 @@ h2 { color:#ff4d6d; }
   width: 60px;
   transition: 0.2s;
 }
+/* 💖 CEWE HIDUP */
+#girl {
+  position: absolute;
+  bottom: 6px;
+  right: 50px;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  animation: idleGirl 2s infinite;
+}
 
+/* kedip + goyang lucu */
+@keyframes idleGirl {
+  0%   { transform: scale(1) rotate(0deg); }
+  20%  { transform: scale(1.05) rotate(-3deg); }
+  40%  { transform: scale(1) rotate(3deg); }
+  60%  { transform: scale(1.05) rotate(-2deg); }
+  80%  { transform: scale(1) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+  /* 😳 blush */
+.blush::after {
+  content: "💗 💗";
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  animation: blushPop 0.6s ease infinite alternate;
+}
+
+@keyframes blushPop {
+  from { transform: translateX(-50%) scale(1); }
+  to   { transform: translateX(-50%) scale(1.2); }
+}
+#boy.hug {
+  left: 50%;
+}
+
+#girl.hug {
+  right: 50%;
+}
+  .hug {
+  transform: translateX(120px) scale(1.1);
+}
+
+#girl.hug {
+  transform: translateX(-120px) scale(1.1);
+}
 .jump {
   animation: jump 0.45s ease;
 }
@@ -151,6 +199,7 @@ button {
 <div id="game">
   <div id="ground"></div>
   <img id="boy" src="zeeyz.png">
+  <img id="girl" src="drell.png">
   <div id="popup"></div>
 </div>
 
@@ -262,27 +311,50 @@ function spawnObstacle(){
   function winGame(){
   gameOver = true;
 
-  popup.innerHTML = "🎉 YEAYY KITA KETEMU 💖✨";
+  popup.innerHTML = "💖 aku dateng ke kamu...";
   popup.classList.add("show");
 
-  // ✨ efek love jatuh
-  for(let i=0; i<20; i++){
-    let love = document.createElement("div");
-    love.innerHTML = "💖";
-    love.style.position = "fixed";
-    love.style.left = Math.random()*100 + "%";
-    love.style.top = "-20px";
-    love.style.fontSize = "24px";
-    love.style.animation = "fall 2s linear forwards";
+  setTimeout(()=>{
+    popup.classList.remove("show");
 
-    document.body.appendChild(love);
+    // 💞 mulai jalan ke arah masing-masing
+    boy.classList.add("hug");
+    document.getElementById("girl").classList.add("hug");
 
-    setTimeout(()=>love.remove(),2000);
-  }
+  },1000);
+    // saat mereka udah deket
+setTimeout(()=>{
+  boy.classList.add("blush");
+  document.getElementById("girl").classList.add("blush");
+},2500);
 
+  // 💥 efek pelukan + love
+  setTimeout(()=>{
+    popup.innerHTML = "🤍 akhirnya kita ketemu...";
+    popup.classList.add("show");
+    boy.classList.add("blush");
+document.getElementById("girl").classList.add("blush");
+
+    for(let i=0; i<30; i++){
+      let love = document.createElement("div");
+      love.innerHTML = "💖";
+      love.style.position = "fixed";
+      love.style.left = "50%";
+      love.style.top = "50%";
+      love.style.fontSize = "20px";
+      love.style.transform = "translate(-50%, -50%)";
+      love.style.animation = "fall 2s linear forwards";
+
+      document.body.appendChild(love);
+      setTimeout(()=>love.remove(),2000);
+    }
+
+  },2500);
+
+  // 💌 lanjut ke surat
   setTimeout(()=>{
     showLetter();
-  },2500);
+  },4500);
 }
 
 /* MOVEMENT + COLLISION */
