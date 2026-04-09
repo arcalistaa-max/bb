@@ -236,12 +236,12 @@ function spawnObstacle(){
   document.getElementById("game").appendChild(el);
   obstacles.push(el);
 
-  let delay = Math.random()*1200 + 1400;
+  let delay = Math.random()*500 + 600;
   setTimeout(spawnObstacle, delay);
 }
 
 /* MOVEMENT + COLLISION */
-let speed = 6;
+let speed = 8;
 
 setInterval(()=>{
   if(gameOver) return;
