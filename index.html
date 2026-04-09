@@ -241,41 +241,47 @@ function spawnObstacle(){
 }
 
 /* MOVEMENT + COLLISION */
+let speed = 6;
+
 setInterval(()=>{
   if(gameOver) return;
 
-  obstacles.forEach((el, i)=>{
-    let current = parseInt(el.style.right);
-  let speed = 6; 
+  for(let i = obstacles.length - 1; i >= 0; i--){
+    let el = obstacles[i];
 
-el.style.right = (current + speed) + "px";
+    let current = parseInt(el.style.right);
+    el.style.right = (current + speed) + "px";
 
     let boyRect = boy.getBoundingClientRect();
     let rect = el.getBoundingClientRect();
+
     let padX = 25;
     let padY = 10;
 
-    if(el.className === "obstacle")
-        if(
-  boyRect.right - padX > rect.left &&
-  boyRect.left + padX < rect.right &&
-  boyRect.bottom - padY > rect.top
-){
-  endGame();
-}
-    }
-
-    if(el.className === "block"){
+    // OBSTACLE (bawah)
+    if(el.className === "obstacle"){
       if(
-        !isSliding &&
-        boyRect.right - pad > rect.left &&
-        boyRect.left + pad < rect.right &&
-        boyRect.top + pad < rect.bottom
+        boyRect.right - padX > rect.left &&
+        boyRect.left + padX < rect.right &&
+        boyRect.bottom - padY > rect.top
       ){
         endGame();
       }
     }
 
+    // BLOCK (atas)
+    if(el.className === "block"){
+      if(
+        !isSliding &&
+        boyRect.right - padX > rect.left &&
+        boyRect.left + padX < rect.right &&
+        boyRect.top + padY < rect.bottom
+      ){
+        endGame();
+      }
+    }
+
+    // LOVE
     if(el.className === "loveItem"){
       if(
         boyRect.right > rect.left &&
@@ -286,15 +292,16 @@ el.style.right = (current + speed) + "px";
         scoreDisplay.innerText = "Score: " + score;
         el.remove();
         obstacles.splice(i,1);
+        continue;
       }
     }
 
+    // HAPUS kalau keluar layar
     if(rect.right < 0){
       el.remove();
       obstacles.splice(i,1);
     }
-
-  });
+  }
 
 },20);
 
