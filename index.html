@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Run To You 💖</title>
-
+<title>Run To You 💖 (Enhanced)</title>
 <style>
 body {
   margin: 0;
   overflow: hidden;
-  background: linear-gradient(#ffe4ec, #ffd1dc);
+  background: linear-gradient(#ffdde1, #ee9ca7);
   font-family: Arial;
   text-align: center;
 }
 
-h2 { color:#ff4d6d; }
-#score { color:#ff4d6d; }
+h2, #score { color:#ff4d6d; }
 
-/* GAME */
 #game {
   width: 90%;
-  height: 300px;
+  height: 320px;
   margin: 30px auto;
   position: relative;
   overflow: hidden;
   border-radius: 20px;
-  background: rgba(255,255,255,0.4);
+  background: url('https://i.imgur.com/8wKQZ5H.png');
+  background-size: cover;
 }
 
-/* GROUND */
 #ground {
   position: absolute;
   bottom: 0;
@@ -41,95 +38,39 @@ h2 { color:#ff4d6d; }
   to { transform: translateX(-50%); }
 }
 
-/* CHARACTER */
 #boy {
   position: absolute;
   bottom: 6px;
   left: 50px;
   width: 60px;
-  transition: 0.2s;
 }
-/* 💖 CEWE HIDUP */
+
 #girl {
   position: absolute;
   bottom: 6px;
   right: 50px;
   width: 90px;
-  height: 150px;
-  object-fit: contain;
-  animation: idleGirl 2s infinite;
+  display: none;
 }
 
-/* kedip + goyang lucu */
-@keyframes idleGirl {
-  0%   { transform: scale(1) rotate(0deg); }
-  20%  { transform: scale(1.05) rotate(-3deg); }
-  40%  { transform: scale(1) rotate(3deg); }
-  60%  { transform: scale(1.05) rotate(-2deg); }
-  80%  { transform: scale(1) rotate(2deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
-  /* 😳 blush */
-.blush::after {
-  content: "💗 💗";
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  animation: blushPop 0.6s ease infinite alternate;
-}
-
-@keyframes blushPop {
-  from { transform: translateX(-50%) scale(1); }
-  to   { transform: translateX(-50%) scale(1.2); }
-}
-#boy.hug {
-  left: 50%;
-}
-
-#girl.hug {
-  right: 50%;
-}
-  .hug {
-  transform: translateX(120px) scale(1.1);
-}
-
-#girl.hug {
-  transform: translateX(-120px) scale(1.1);
-}
-.jump {
-  animation: jump 0.45s ease;
-}
-
+.jump { animation: jump 0.45s ease; }
 @keyframes jump {
   0% { bottom: 6px; }
-  50% { bottom: 110px; }
+  50% { bottom: 120px; }
   100% { bottom: 6px; }
 }
 
-.slide {
-  height: 35px;
-}
+.slide { height: 35px; }
 
-/* OBJECT */
-.obstacle, .block, .loveItem {
+.obstacle, .loveItem {
   position: absolute;
   right: -50px;
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .obstacle { bottom: 6px; }
-.block {
-  bottom: 80px;
-  width: 40px;
-  height: 40px;
-  background: #ff8fab;
-  border-radius: 8px;
-}
 .loveItem { bottom: 140px; }
 
-/* UI */
 #popup {
   position: absolute;
   top: 40%;
@@ -142,48 +83,16 @@ h2 { color:#ff4d6d; }
   transition: 0.3s;
 }
 
-#popup.show {
-  transform: translate(-50%, -50%) scale(1);
-}
-@keyframes fall {
-  to {
-    transform: translateY(100vh);
-    opacity: 0;
-  }
-}
-
-/* tombol popup */
-#popup button {
-  width: 160px;
-  margin-top: 10px;
-  border-radius: 12px;
-}
-/* START SCREEN */
-#startScreen {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(255,228,236,0.95);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #ff4d6d;
-  z-index: 999;
-}
+#popup.show { transform: translate(-50%, -50%) scale(1); }
 
 button {
-  margin-top: 15px;
+  margin-top: 10px;
   padding: 10px 20px;
   border: none;
   border-radius: 10px;
   background: #ff4d6d;
   color: white;
-  font-size: 16px;
   cursor: pointer;
-}
-#girl {
-  display: none;
 }
 </style>
 </head>
@@ -193,18 +102,6 @@ button {
 <h2>Run To You 💖</h2>
 <h3 id="score">Score: 0</h3>
 
-<!-- START SCREEN -->
-<div id="startScreen">
-  <h2>Run To You 💖</h2>
-  <p>
-    ⬆️ Lompat: Spasi / Klik<br>
-    ⬇️ Nunduk: Arrow Down / S<br><br>
-    💔 Hindari rintangan<br>
-    💖 Ambil love (+10)
-  </p>
-  <button onclick="startGame()">Mulai 💖</button>
-</div>
-
 <div id="game">
   <div id="ground"></div>
   <img id="boy" src="zeeyz.png">
@@ -212,303 +109,122 @@ button {
   <div id="popup"></div>
 </div>
 
-<script>
-  
-let gameStarted = false;
+<!-- SOUND -->
+<audio id="jumpSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+<audio id="hitSound" src="https://www.soundjay.com/button/beep-10.mp3"></audio>
+<audio id="winSound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+<audio id="loseSound" src="https://www.soundjay.com/misc/sounds/fail-buzzer-02.mp3"></audio>
+<audio id="bgm" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
 
+<script>
 let boy = document.getElementById("boy");
+let girl = document.getElementById("girl");
 let popup = document.getElementById("popup");
 let scoreDisplay = document.getElementById("score");
-let girl = document.getElementById("girl");
-  
+
+let jumpSound = document.getElementById("jumpSound");
+let hitSound = document.getElementById("hitSound");
+let winSound = document.getElementById("winSound");
+let loseSound = document.getElementById("loseSound");
+let bgm = document.getElementById("bgm");
+
 let score = 0;
 let gameOver = false;
-let isSliding = false;
 let obstacles = [];
-  
-  
-/* START */
-function startGame(){
-  document.getElementById("startScreen").style.display = "none";
-  gameStarted = true;
 
-  // 💖 MUNCUL DI AWAL
-  girl.style.display = "block";
+bgm.volume = 0.3;
+bgm.play();
 
-  popup.innerHTML = "💌 Dapetin 200 poin biar kita bisa ketemu ya sayang 💖";
-  popup.classList.add("show");
-
-  setTimeout(()=>{
-
-    popup.classList.remove("show");
-
-    // 💨 HILANG SAAT GAME MULAI
-    girl.style.display = "none";
-
-  },2000);
-
-  spawnObstacle();
-}
-
-/* CONTROL */
 function jump(){
-  if(gameOver || isSliding) return;
-
+  if(gameOver) return;
+  jumpSound.play();
   boy.classList.remove("jump");
   void boy.offsetWidth;
   boy.classList.add("jump");
 }
 
-function slide(){
-  if(gameOver) return;
-
-  isSliding = true;
-  boy.classList.add("slide");
-
-  setTimeout(()=>{
-    isSliding = false;
-    boy.classList.remove("slide");
-  },400);
-}
-
-window.addEventListener("keydown", e=>{
-  if(e.code === "Space"){
-    e.preventDefault();
-    jump();
-  }
-  if(e.code === "ArrowDown" || e.key === "s"){
-    slide();
-  }
+document.addEventListener("click", jump);
+document.addEventListener("keydown", e => {
+  if(e.code === "Space") jump();
 });
 
-window.addEventListener("click", jump);
-window.addEventListener("touchstart", jump);
-
-/* SCORE */
 setInterval(()=>{
   if(gameOver) return;
-
   score++;
   scoreDisplay.innerText = "Score: " + score;
 
-  // 🎯 BATAS GAME
-  if(score >= 200){
-    winGame();
-  }
-
+  if(score >= 150) winGame();
 },100);
 
-/* SPAWN */
 function spawnObstacle(){
-  if(gameOver || !gameStarted) return;
+  if(gameOver) return;
 
-  let type = Math.random();
   let el = document.createElement("div");
+  let type = Math.random();
 
-  if(type < 0.5){
+  if(type < 0.7){
     el.className = "obstacle";
     el.innerHTML = "💔";
-  } 
-  else if(type < 0.65){
-    el.className = "block";
-  } 
-  else {
+  } else {
     el.className = "loveItem";
     el.innerHTML = "💖";
-    el.style.bottom = (Math.random()*60+120)+"px";
   }
 
   el.style.right = "-50px";
   document.getElementById("game").appendChild(el);
   obstacles.push(el);
 
-  let delay = Math.random()*500 + 600;
-  setTimeout(spawnObstacle, delay);
+  setTimeout(spawnObstacle, Math.random()*800+500);
 }
- function winGame(){
-  gameOver = true;
+spawnObstacle();
 
-     // 💖 MUNCUL LAGI DI AKHIR
-  girl.style.display = "block";
-
-  popup.innerHTML = "💖 aku dateng ke kamu...";
-  popup.classList.add("show");
-
-  setTimeout(()=>{
-    popup.classList.remove("show");
-
-    // 💞 mulai jalan
-    boy.classList.add("hug");
-    girl.classList.add("hug");
-
-  },1000);
-
-  // 😳 blush
-  setTimeout(()=>{
-    boy.classList.add("blush");
-    girl.classList.add("blush");
-  },2500);
-
-  // 💥 efek + teks
-  setTimeout(()=>{
-    popup.innerHTML = "🤍 akhirnya kita ketemu...";
-    popup.classList.add("show");
-
-    for(let i=0; i<30; i++){
-      let love = document.createElement("div");
-      love.innerHTML = "💖";
-      love.style.position = "fixed";
-      love.style.left = "50%";
-      love.style.top = "50%";
-      love.style.fontSize = "20px";
-      love.style.transform = "translate(-50%, -50%)";
-      love.style.animation = "fall 2s linear forwards";
-
-      document.body.appendChild(love);
-      setTimeout(()=>love.remove(),2000);
-    }
-
-  },2500);
-
-  // 💖 pilihan (INI HARUS DI DALAM FUNCTION)
-  setTimeout(()=>{
-    showChoice();
-  },4500);
-}
-
-/* MOVEMENT + COLLISION */
-let speed = 8;
-  
+let speed = 6;
 setInterval(()=>{
   if(gameOver) return;
 
-  for(let i = obstacles.length - 1; i >= 0; i--){
+  for(let i=obstacles.length-1;i>=0;i--){
     let el = obstacles[i];
-
-    let current = parseInt(el.style.right);
-    el.style.right = (current + speed) + "px";
+    el.style.right = (parseInt(el.style.right)+speed)+"px";
 
     let boyRect = boy.getBoundingClientRect();
     let rect = el.getBoundingClientRect();
 
-    let padX = 25;
-    let padY = 10;
-
-    // OBSTACLE (bawah)
     if(el.className === "obstacle"){
-      if(
-        boyRect.right - padX > rect.left &&
-        boyRect.left + padX < rect.right &&
-        boyRect.bottom - padY > rect.top
-      ){
+      if(boyRect.right > rect.left && boyRect.left < rect.right && boyRect.bottom > rect.top){
+        hitSound.play();
         endGame();
       }
     }
 
-    // BLOCK (atas)
-    if(el.className === "block"){
-      if(
-        !isSliding &&
-        boyRect.right - padX > rect.left &&
-        boyRect.left + padX < rect.right &&
-        boyRect.top + padY < rect.bottom
-      ){
-        endGame();
-      }
-    }
-
-    // LOVE
     if(el.className === "loveItem"){
-      if(
-        boyRect.right > rect.left &&
-        boyRect.left < rect.right &&
-        boyRect.top < rect.bottom
-      ){
+      if(boyRect.right > rect.left && boyRect.left < rect.right){
         score += 10;
-        scoreDisplay.innerText = "Score: " + score;
         el.remove();
         obstacles.splice(i,1);
-        continue;
       }
     }
 
-    // HAPUS kalau keluar layar
     if(rect.right < 0){
       el.remove();
       obstacles.splice(i,1);
     }
   }
-
 },20);
 
-/* GAME OVER */
+function winGame(){
+  gameOver = true;
+  winSound.play();
+  girl.style.display = "block";
+
+  popup.innerHTML = "💖 Kamu berhasil ketemu dia! 💖";
+  popup.classList.add("show");
+}
+
 function endGame(){
   gameOver = true;
+  loseSound.play();
 
-  popup.innerHTML = "Yah sayang aku nabrak 😭<br>Score: "+score;
-  popup.classList.add("show");
-
-  setTimeout(()=>{
-    resetGame();
-  },2000);
-}
-  function resetGame(){
-  // reset state
-  score = 0;
-  gameOver = false;
-  obstacles = [];
-  isSliding = false;
-
-  scoreDisplay.innerText = "Score: 0";
-
-  // hapus obstacle lama
-  document.querySelectorAll(".obstacle, .block, .loveItem").forEach(el => el.remove());
-
-  popup.classList.remove("show");
-
-  // start lagi
-  spawnObstacle();
-
-}
-function showLetter(){
-  document.body.innerHTML = `
-    <div style="
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      background:linear-gradient(#ffe4ec,#ffd1dc);
-      font-family:Arial;
-      text-align:center;
-      color:#ff4d6d;
-      padding:20px;
-    ">
-      <div style="
-        background:white;
-        padding:25px;
-        border-radius:15px;
-        max-width:400px;
-      ">
-        <h2>💌 Surat Untuk Kamu</h2>
-        <p>
-        akhirnya kita ketemu juga 💖<br><br>
-        makasih ya udah bertahan sejauh ini,<br>
-        walaupun banyak rintangan 💔<br><br>
-        aku selalu nunggu kamu di garis akhir ✨
-        </p>
-        <button onclick="location.reload()">Main Lagi 💖</button>
-      </div>
-    </div>
-  `;
-}
-  function showChoice(){
-  popup.innerHTML = `
-    <h3>💖 kita akhirnya ketemu...</h3>
-    <p>mau ngapain sekarang?</p>
-
-    <button onclick="showLetter()">💌 Buka Surat</button><br><br>
-    <button onclick="resetGame()">🎮 Main Lagi</button>
-  `;
+  popup.innerHTML = "😭 Kamu kalah!<br>Score: "+score;
   popup.classList.add("show");
 }
 </script>
