@@ -55,7 +55,7 @@ h2 { color:#ff4d6d; }
   bottom: 6px;
   right: 50px;
   width: 90px;
-  height: 90px;
+  height: 150px;
   object-fit: contain;
   animation: idleGirl 2s infinite;
 }
@@ -175,7 +175,10 @@ button {
   font-size: 16px;
   cursor: pointer;
 }
-
+#popup button {
+  width: 150px;
+  margin-top: 10px;
+}
 </style>
 </head>
 
@@ -350,11 +353,12 @@ document.getElementById("girl").classList.add("blush");
     }
 
   },2500);
+  }
 
   // 💌 lanjut ke surat
   setTimeout(()=>{
-    showLetter();
-  },4500);
+  showChoice();
+},4500);
 }
 
 /* MOVEMENT + COLLISION */
@@ -449,6 +453,15 @@ function endGame(){
 
   // start lagi
   spawnObstacle();
+}
+  function showChoice(){
+  popup.innerHTML = `
+    <h3>💖 kita akhirnya ketemu...</h3>
+    <p>kamu mau apa sekarang?</p>
+    <button onclick="showLetter()">💌 Buka Surat</button><br><br>
+    <button onclick="location.reload()">🎮 Main Lagi</button>
+  `;
+  popup.classList.add("show");
 }
 function showLetter(){
   document.body.innerHTML = `
