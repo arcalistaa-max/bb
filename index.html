@@ -183,21 +183,27 @@ setInterval(()=>{
   obstacle.style.animationDuration = speed + "s";
 },3000);
 
-/* COLLISION */
 setInterval(()=>{
   if(gameOver) return;
 
-  let boyBottom = parseInt(getComputedStyle(boy).bottom);
-  let obstacleLeft = obstacle.getBoundingClientRect().left;
+  let boyRect = boy.getBoundingClientRect();
+  let obsRect = obstacle.getBoundingClientRect();
+  
+  let padding = 15;
 
-  if(obstacleLeft < 120 && obstacleLeft > 60 && boyBottom < 40){
+  if(
+    boyRect.right - padding > obsRect.left &&
+    boyRect.left + padding < obsRect.right &&
+    boyRect.bottom - padding > obsRect.top
+  ){
     gameOver = true;
 
-    popup.innerHTML = "Yah nabrak 😭<br>Score: "+score;
+    popup.innerHTML = "Yah nabrak 😭<br>Score: " + score;
     popup.classList.add("show");
 
     setTimeout(()=>location.reload(),2000);
   }
+
 },10);
 
 /* ENDING */
