@@ -153,7 +153,13 @@ let hitSound = document.getElementById("hitSound");
 let winSound = document.getElementById("winSound");
 let bgm = document.getElementById("bgm");
 let letterBgm = document.getElementById("letterBgm");
-
+  
+document.addEventListener("click", ()=>{
+  if(letterBgm.paused){
+    letterBgm.play().catch(()=>{});
+  }
+}, { once:true });
+  
 let score = 0;
 let gameOver = false;
 let obstacles = [];
