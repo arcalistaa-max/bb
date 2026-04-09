@@ -208,9 +208,16 @@ window.addEventListener("touchstart", jump);
 /* SCORE */
 setInterval(()=>{
   if(gameOver) return;
+
   score++;
   scoreDisplay.innerText = "Score: " + score;
-},300);
+
+  // 🎯 BATAS GAME
+  if(score >= 200){
+    winGame();
+  }
+
+},100);
 
 /* SPAWN */
 function spawnObstacle(){
@@ -238,6 +245,14 @@ function spawnObstacle(){
 
   let delay = Math.random()*500 + 600;
   setTimeout(spawnObstacle, delay);
+}
+  function winGame(){
+  gameOver = true;
+
+  popup.innerHTML = "Akhirnya sampai ke kamu 💖✨<br>Score: " + score;
+  popup.classList.add("show");
+
+  setTimeout(()=>location.reload(),2500);
 }
 
 /* MOVEMENT + COLLISION */
