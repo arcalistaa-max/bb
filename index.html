@@ -159,8 +159,13 @@ let obstacles = [];
 
 function startGame(){
   document.getElementById("startScreen").style.display="none";
+
   bgm.volume = 0.3;
-  bgm.play();
+
+  bgm.play().catch(()=> {
+    console.log("Autoplay diblok, klik layar dulu");
+  });
+
   spawnObstacle();
 }
 function duckDown(){
@@ -298,15 +303,20 @@ function endGame(){
 }
 
 function showLetter(){
-  
-  bgm.pause();
-bgm.currentTime = 0;
 
-let letterBgm = document.getElementById("letterBgm");
-letterBgm.volume = 0.4;
-letterBgm.play();
-  
+  // stop lagu game
+  bgm.pause();
+  bgm.currentTime = 0;
+
+  // play lagu surat
+  letterBgm.volume = 0.4;
+
+  letterBgm.play().catch(()=>{
+    console.log("Klik lagi biar lagu jalan");
+  });
+
   document.body.innerHTML = `
+  
   <div style="
     min-height:100vh;
     background:linear-gradient(#ffe4ec,#ffd1dc);
