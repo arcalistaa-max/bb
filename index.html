@@ -154,12 +154,6 @@ let winSound = document.getElementById("winSound");
 let bgm = document.getElementById("bgm");
 let letterBgm = document.getElementById("letterBgm");
   
-document.addEventListener("click", ()=>{
-  if(letterBgm.paused){
-    letterBgm.play().catch(()=>{});
-  }
-}, { once:true });
-  
 let score = 0;
 let gameOver = false;
 let obstacles = [];
@@ -308,19 +302,23 @@ function endGame(){
 
   setTimeout(()=>location.reload(),2000);
 }
-
 function showLetter(){
 
   // stop lagu game
   bgm.pause();
   bgm.currentTime = 0;
 
-  // play lagu surat
+  // reset & play lagu surat
+  letterBgm.currentTime = 0;
   letterBgm.volume = 0.4;
 
-  letterBgm.play().catch(()=>{
-    console.log("Klik lagi biar lagu jalan");
-  });
+  let playPromise = letterBgm.play();
+
+  if(playPromise !== undefined){
+    playPromise.catch(()=>{
+      console.log("Audio butuh interaksi lagi");
+    });
+  }
 
   document.body.innerHTML = `
   
