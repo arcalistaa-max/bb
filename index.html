@@ -56,7 +56,7 @@ h2, #score { color:#ff4d6d; }
 .jump { animation: jump 0.45s ease; }
 @keyframes jump {
   0% { bottom:6px; }
-  50% { bottom:120px; }
+  50% { bottom:140px; }
   100% { bottom:6px; }
 }
 
@@ -205,14 +205,24 @@ setInterval(()=>{
     let rect = el.getBoundingClientRect();
 
     if(el.className==="obstacle"){
-      if(boyRect.right>rect.left && boyRect.left<rect.right && boyRect.bottom>rect.top){
-        hitSound.play();
-        endGame();
-      }
+  let padding = 15; // makin besar = makin gampang lolos
+
+  if(
+    boyRect.right - padding > rect.left &&
+    boyRect.left + padding < rect.right &&
+    boyRect.bottom - padding > rect.top
+  ){
+    hitSound.play();
+    endGame();
+  }
     }
 
-    if(el.className==="loveItem"){
-      if(boyRect.right>rect.left && boyRect.left<rect.right){
+   if(el.className==="loveItem"){
+  if(
+    boyRect.right > rect.left &&
+    boyRect.left < rect.right &&
+    boyRect.top < rect.bottom
+  ){
         score+=10;
         el.remove();
         obstacles.splice(i,1);
