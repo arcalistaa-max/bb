@@ -140,7 +140,8 @@ button {
 <audio id="hitSound" src="hit.mp3"></audio>
 <audio id="winSound" src="win.mp3"></audio>
 <audio id="bgm" src="bgm.mp3" loop></audio>
-
+<audio id="letterBgm" src="love.mp3" loop></audio>
+  
 <script>
 let boy = document.getElementById("boy");
 let girl = document.getElementById("girl");
@@ -297,6 +298,14 @@ function endGame(){
 }
 
 function showLetter(){
+  
+  bgm.pause();
+bgm.currentTime = 0;
+
+let letterBgm = document.getElementById("letterBgm");
+letterBgm.volume = 0.4;
+letterBgm.play();
+  
   document.body.innerHTML = `
   <div style="
     min-height:100vh;
