@@ -133,14 +133,14 @@ button {
 
 <!-- START SCREEN -->
 <div id="startScreen">
-  <h2>Cara Main 💖</h2>
+  <h2>Run To You 💖</h2>
   <p>
     ⬆️ Lompat: Spasi / Klik<br>
     ⬇️ Nunduk: Arrow Down / S<br><br>
     💔 Hindari rintangan<br>
-    💖 Ambil love +10 poin
+    💖 Ambil love (+10)
   </p>
-  <button onclick="startGame()">Mulai</button>
+  <button onclick="startGame()">Mulai 💖</button>
 </div>
 
 <div id="game">
@@ -150,6 +150,8 @@ button {
 </div>
 
 <script>
+  
+let gameStarted = false;
 
 let boy = document.getElementById("boy");
 let popup = document.getElementById("popup");
@@ -163,8 +165,10 @@ let obstacles = [];
 /* START */
 function startGame(){
   document.getElementById("startScreen").style.display = "none";
+  gameStarted = true;
   spawnObstacle();
 }
+
 
 /* CONTROL */
 function jump(){
@@ -184,7 +188,7 @@ function slide(){
   setTimeout(()=>{
     isSliding = false;
     boy.classList.remove("slide");
-  },600);
+  },800);
 }
 
 window.addEventListener("keydown", e=>{
@@ -209,16 +213,16 @@ setInterval(()=>{
 
 /* SPAWN */
 function spawnObstacle(){
-  if(gameOver) return;
+  if(gameOver || !gameStarted) return;
 
   let type = Math.random();
   let el = document.createElement("div");
 
-  if(type < 0.4){
+  if(type < 0.5){
     el.className = "obstacle";
     el.innerHTML = "💔";
   } 
-  else if(type < 0.7){
+  else if(type < 0.65){
     el.className = "block";
   } 
   else {
@@ -231,7 +235,7 @@ function spawnObstacle(){
   document.getElementById("game").appendChild(el);
   obstacles.push(el);
 
-  let delay = Math.random()*1500 + 1200;
+  let delay = Math.random()*2000 + 1800;
   setTimeout(spawnObstacle, delay);
 }
 
@@ -241,11 +245,11 @@ setInterval(()=>{
 
   obstacles.forEach((el, i)=>{
     let current = parseInt(el.style.right);
-    el.style.right = (current + 5) + "px";
+    el.style.right = (current + 3) + "px";
 
     let boyRect = boy.getBoundingClientRect();
     let rect = el.getBoundingClientRect();
-    let pad = 10;
+    let pad = 20;
 
     if(el.className === "obstacle"){
       if(
@@ -293,7 +297,7 @@ setInterval(()=>{
 /* GAME OVER */
 function endGame(){
   gameOver = true;
-  popup.innerHTML = "Yah ayang nabrak 😭<br>Score: "+score;
+  popup.innerHTML = "Yah sayang aku nabrak 😭<br>Score: "+score;
   popup.classList.add("show");
 
   setTimeout(()=>location.reload(),2000);
