@@ -150,7 +150,10 @@ h2 { color:#ff4d6d; }
     transform: translateY(100vh);
     opacity: 0;
   }
-  #popup button {
+}
+
+/* tombol popup */
+#popup button {
   width: 160px;
   margin-top: 10px;
   border-radius: 12px;
@@ -179,10 +182,7 @@ button {
   font-size: 16px;
   cursor: pointer;
 }
-#popup button {
-  width: 150px;
-  margin-top: 10px;
-}
+  
 </style>
 </head>
 
@@ -316,7 +316,7 @@ function spawnObstacle(){
   let delay = Math.random()*500 + 600;
   setTimeout(spawnObstacle, delay);
 }
-  function winGame(){
+ function winGame(){
   gameOver = true;
 
   popup.innerHTML = "💖 aku dateng ke kamu...";
@@ -325,23 +325,22 @@ function spawnObstacle(){
   setTimeout(()=>{
     popup.classList.remove("show");
 
-    // 💞 mulai jalan ke arah masing-masing
+    // 💞 mulai jalan
     boy.classList.add("hug");
-    document.getElementById("girl").classList.add("hug");
+    girl.classList.add("hug");
 
   },1000);
-    // saat mereka udah deket
-setTimeout(()=>{
-  boy.classList.add("blush");
-  document.getElementById("girl").classList.add("blush");
-},2500);
 
-  // 💥 efek pelukan + love
+  // 😳 blush
+  setTimeout(()=>{
+    boy.classList.add("blush");
+    girl.classList.add("blush");
+  },2500);
+
+  // 💥 efek + teks
   setTimeout(()=>{
     popup.innerHTML = "🤍 akhirnya kita ketemu...";
     popup.classList.add("show");
-    boy.classList.add("blush");
-document.getElementById("girl").classList.add("blush");
 
     for(let i=0; i<30; i++){
       let love = document.createElement("div");
@@ -358,10 +357,11 @@ document.getElementById("girl").classList.add("blush");
     }
 
   },2500);
-  } // 💌 lanjut ke surat
+
+  // 💖 pilihan (INI HARUS DI DALAM FUNCTION)
   setTimeout(()=>{
-  showChoice();
-},4500);
+    showChoice();
+  },4500);
 }
 
 /* MOVEMENT + COLLISION */
