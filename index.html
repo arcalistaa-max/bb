@@ -182,7 +182,9 @@ button {
   font-size: 16px;
   cursor: pointer;
 }
-  
+#girl {
+  display: none;
+}
 </style>
 </head>
 
@@ -230,12 +232,19 @@ function startGame(){
   document.getElementById("startScreen").style.display = "none";
   gameStarted = true;
 
-  // 💖 POPUP AWAL
+  // 💖 MUNCUL DI AWAL
+  girl.style.display = "block";
+
   popup.innerHTML = "💌 Dapetin 200 poin biar kita bisa ketemu ya sayang 💖";
   popup.classList.add("show");
 
   setTimeout(()=>{
+
     popup.classList.remove("show");
+
+    // 💨 HILANG SAAT GAME MULAI
+    girl.style.display = "none";
+
   },2000);
 
   spawnObstacle();
@@ -319,6 +328,9 @@ function spawnObstacle(){
  function winGame(){
   gameOver = true;
 
+     // 💖 MUNCUL LAGI DI AKHIR
+  girl.style.display = "block";
+
   popup.innerHTML = "💖 aku dateng ke kamu...";
   popup.classList.add("show");
 
@@ -367,10 +379,6 @@ function spawnObstacle(){
 /* MOVEMENT + COLLISION */
 let speed = 8;
   
-setInterval(()=>{
-  if(gameOver) return;
-
-  if(score % 50 === 0 && score !== 0){
     girl.style.transform = "scale(1.2)";
     setTimeout(()=>{
       girl.style.transform = "scale(1)";
